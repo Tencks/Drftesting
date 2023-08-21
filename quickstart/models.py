@@ -34,6 +34,13 @@ TIPOMEDICAMENTO = (
 
 )
 
+CARGO = (
+     ('0','invitado'),
+     ('1','Medico/a'),
+     ('2','Enfermero/a'),
+     ('3','Empleado diario'),
+     ('4','Admin'),
+)
 
 # Create your models here.
 class project(models.Model):
@@ -42,10 +49,12 @@ class project(models.Model):
     technology = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     
-
-class usuario(models.Model):
-    nombre = models.CharField(max_length=200)
-
+#DATOS DE CADA USUARIO DEL SISTEMA
+class Users(models.Model):
+    usuario = models.CharField(max_length=20)
+    password = models.CharField(max_length=20, null=False)
+    email = models.EmailField(null=False)
+    cargo = models.CharField(max_length=1, choices=CARGO)
 #DATOS DE CADA RESIDENTE
 
 class Residente (models.Model):
@@ -102,3 +111,18 @@ class ObservaciónSemanal (models.Model):
      pulso = models.CharField(max_length=30)
      observacionesSemanales = models.TextField(default='some string')
      derivacionesSemanales = models.TextField(default='some string2')
+
+
+
+class StockMedicamentosLocal (models.Model):
+        genericMedicamento = models.CharField(max_length=1, choices=GENERICO)
+        nombreMedicamento = models.CharField(max_length=80)
+        marcaMedicamento = models.CharField(max_length=60)
+        pesoMedicamento = models.CharField(max_length=35)
+        cantDisponible = models.IntegerField()
+        medicionMedicamento = models.CharField(max_length=1, choices=TIPOMEDICAMENTO)
+        fechaIngreso = models.DateField(default=None)
+        fechaCaducidad = models.DateField(default=None)
+        codMedicamento = models.CharField(max_length=50)
+        observacionesMedicamento = models.TextField(blank=False,default='SOME STRING')
+        derivacionesMedicamento = models.TextField(blank=False,default='SOME STRING')
