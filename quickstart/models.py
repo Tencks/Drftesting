@@ -41,20 +41,22 @@ CARGO = (
      ('3','Empleado diario'),
      ('4','Admin'),
 )
-
-# Create your models here.
-class project(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    technology = models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
+  
 #DATOS DE CADA USUARIO DEL SISTEMA
-class Users(models.Model):
-    usuario = models.CharField(max_length=20)
-    password = models.CharField(max_length=20, null=False)
-    email = models.EmailField(null=False)
+class User(models.Model):
+    username = models.CharField(max_length=200, null=False)
+    email = models.CharField(max_length=200, null=False)
+    password = models.CharField(max_length=50, null=False)
+    ifLogged = models.BooleanField(default=False)
+    token = models.CharField(max_length=200, default="", null=True)
     cargo = models.CharField(max_length=1, choices=CARGO)
+
+
+    def __str__(self):
+        return "{} -{}".format(self.username, self.email)
+
+   
+
 #DATOS DE CADA RESIDENTE
 
 class Residente (models.Model):

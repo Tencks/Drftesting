@@ -1,58 +1,54 @@
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
-from rest_framework import viewsets, permissions, status
+from django.shortcuts import redirect
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework import viewsets, permissions, generics
 
 
-from .models import project, Residente, StockMedicamentosResidente, ObservaciónSemanal, Users, StockMedicamentosLocal
-from .serializers import ProjectSerializer, ResidenteSerializer, StockMedicamentosResidenteSerializer, ObservacionSemanalSerializer, UsersRegisterSerializer,UsersLoginSerializer, StockMedicamentosLocalSerializer
+from .models import  Residente, StockMedicamentosResidente, ObservaciónSemanal, User, StockMedicamentosLocal
+from .serializers import  ResidenteSerializer, StockMedicamentosResidenteSerializer, ObservacionSemanalSerializer, StockMedicamentosLocalSerializer
+from .serializers import UserSerializer, UserLoginSerializer, UserLogoutSerializer
 
 
-class UsersRegisterViewSet(viewsets.ModelViewSet):
-    queryset = Users.objects.all()
-    permission_classes = [permissions.AllowAny]
-    serializer_class = UsersRegisterSerializer
-
-def create(self, request, *args, **kwargs):
-        serializer = UsersRegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UsersLoginViewSet(viewsets.ModelViewSet):
-    queryset = Users.objects.all()
-    permission_classes = [permissions.AllowAny]
-    serializer_class = UsersLoginSerializer
-
-
-
-    @action(detail=False, methods=['post'])
-    def login(self, request):
-        serializer = UsersLoginSerializer(data=request.data)
-        if serializer.is_valid():
-            usuario = serializer.validated_data['usuario']
-            password = serializer.validated_data['password']
-            user = authenticate(request, usuario=usuario, password=password)
-            if user:
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key})
-            return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-
-
-class ProjectViewSet(viewsets.ModelViewSet):
-    queryset = project.objects.all()
-    permission_classes = [permissions.AllowAny]
-    serializer_class = ProjectSerializer
+class Record(generics.ListCreateAPIView):
+    # get method handler
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     
+
+class Login(generics.GenericAPIView):
+    # get method handler
+    queryset = User.objects.all()
+    serializer_class = UserLoginSerializer
+   
+
+    def post(self, request, *args, **kwargs):
+        serializer_class = UserLoginSerializer(data=request.data)
+        if serializer_class.is_valid(raise_exception=True):
+         user = serializer_class.validated_data.get('user')
+    
+         return Response(serializer_class.data, status=HTTP_200_OK)
+        return Response(serializer_class.errors, status=HTTP_400_BAD_REQUEST)
+
+
+class Logout(generics.GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserLogoutSerializer
+   
+    def post(self, request, *args, **kwargs):
+        serializer_class = UserLogoutSerializer(data=request.data)
+        if serializer_class.is_valid(raise_exception=True):
+            return Response(serializer_class.data, status=HTTP_200_OK)
+        return Response(serializer_class.errors, status=HTTP_400_BAD_REQUEST)
+
+
+def index(request):
+    return redirect('/api/login')   
+
+
+
+
+
+
 
 class ResidenteViewSet(viewsets.ModelViewSet):
     queryset = Residente.objects.all()
