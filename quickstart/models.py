@@ -66,7 +66,7 @@ class Residente (models.Model):
     fechaNacimiento = models.DateField(default=None)
     edad = models.IntegerField(default='Edad del residente')
     genero = models.CharField(max_length=1, choices=GENERO)
-    #fotoResidente = models.ImageField(upload_to='residentesFoto/', blank=True, null=True)
+    fotoResidente = models.ImageField(upload_to='residentesFoto/', blank='', default='')
     medicoDeCabecera = models.CharField(max_length=40)
     grupoSanguineo = models.CharField(max_length=40, default='Sangre')
     numeroDeHabitacion = models.CharField(max_length=40)

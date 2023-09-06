@@ -5,6 +5,9 @@ from django.db.models import Q # for queries
 from rest_framework.validators import UniqueValidator
 from django.core.exceptions import ValidationError
 from uuid import uuid4
+from drf_extra_fields.fields import Base64ImageField
+
+
 
 
 #EL MAQUINADO DE USERS
@@ -24,7 +27,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = (
             'username',
             'email',
-            'password'
+            'password',
+            'cargo'
         )
 
 
@@ -64,6 +68,11 @@ class UserLoginSerializer(serializers.ModelSerializer):
         data['token'] = uuid4()
         user.token = data['token']
         user.save()
+
+        data['cargo'] = user.cargo
+        user.cargo = data['cargo']
+        user.save()
+
         return data
 
     class Meta:
@@ -72,10 +81,12 @@ class UserLoginSerializer(serializers.ModelSerializer):
             'user_id',
             'password',
             'token',
+            'cargo'
         )
 
         read_only_fields = (
             'token',
+            'cargo'
         )
 
 
@@ -111,13 +122,14 @@ class UserLogoutSerializer(serializers.ModelSerializer):
 #RESIDENTES
 
 class ResidenteSerializer(serializers.ModelSerializer):
+    fotoResidente = Base64ImageField(required=False)
     class Meta:
         model = Residente
         fields = (
             'id','nombreResidente','apellidoResidente','dniResidente','fechaNacimiento','edad',
             'genero','medicoDeCabecera','grupoSanguineo','numeroDeHabitacion','observacionesResidente',
             'localidadFamiliar','domicilioFamiliar','nombreFamiliar','apellidoFamiliar','numeroTelefonico',
-            'dniFamiliar','numeroAfiliado','obraSocial','vinculoConElResidente'
+            'dniFamiliar','numeroAfiliado','obraSocial','vinculoConElResidente','fotoResidente'
             )
 
 class StockMedicamentosLocalSerializer(serializers.ModelSerializer):
@@ -126,7 +138,7 @@ class StockMedicamentosLocalSerializer(serializers.ModelSerializer):
         fields = (
                 'id','genericMedicamento','nombreMedicamento','marcaMedicamento',
                 'pesoMedicamento','cantDisponible','medicionMedicamento',
-                'fechaIngreso','codMedicamento','observacionesMedicamento','derivacionesMedicamento'
+                'fechaIngreso','fechaCaducidad','codMedicamento','observacionesMedicamento','derivacionesMedicamento'
                   )
 
 class ObservacionSemanalSerializer(serializers.ModelSerializer):
@@ -144,5 +156,5 @@ class StockMedicamentosResidenteSerializer(serializers.ModelSerializer):
         fields = (
                 'id','residenteM','genericMedicamento','nombreMedicamento','marcaMedicamento',
                 'pesoMedicamento','cantDisponible','medicionMedicamento',
-                'fechaIngreso','codMedicamento','observacionesMedicamento','derivacionesMedicamento'
+                'fechaIngreso','fechaCaducidad','codMedicamento','observacionesMedicamento','derivacionesMedicamento'
                   )
