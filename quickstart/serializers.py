@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Residente, StockMedicamentosResidente, ObservaciónSemanal, User, StockMedicamentosLocal
+from .models import Residente, StockMedicamentosResidente, ObservaciónSemanal, User, StockMedicamentosLocal, LocalArmonia, CuracionesResidente
 
 from django.db.models import Q # for queries
 from rest_framework.validators import UniqueValidator
@@ -20,15 +20,22 @@ class UserSerializer(serializers.ModelSerializer):
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
         )
-    password = serializers.CharField(max_length=8)
+    password = serializers.CharField(max_length=50)
 
+    fotoUser = Base64ImageField(required=False)
     class Meta:
         model = User
         fields = (
             'username',
             'email',
             'password',
-            'cargo'
+            'cargo',
+            'fotoUser',
+            'descriptionUser',
+            'numCelular',
+            'direccion',
+            'birthday',
+            'id'
         )
 
 
@@ -73,6 +80,11 @@ class UserLoginSerializer(serializers.ModelSerializer):
         user.cargo = data['cargo']
         user.save()
 
+        data['id'] = user.id
+        user.id = data['id']
+        user.save()
+       
+
         return data
 
     class Meta:
@@ -81,12 +93,14 @@ class UserLoginSerializer(serializers.ModelSerializer):
             'user_id',
             'password',
             'token',
-            'cargo'
+            'cargo',
+            'id'
         )
 
         read_only_fields = (
             'token',
-            'cargo'
+            'cargo',
+            'id'
         )
 
 
@@ -132,14 +146,6 @@ class ResidenteSerializer(serializers.ModelSerializer):
             'dniFamiliar','numeroAfiliado','obraSocial','vinculoConElResidente','fotoResidente'
             )
 
-class StockMedicamentosLocalSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StockMedicamentosLocal
-        fields = (
-                'id','genericMedicamento','nombreMedicamento','marcaMedicamento',
-                'pesoMedicamento','cantDisponible','medicionMedicamento',
-                'fechaIngreso','fechaCaducidad','codMedicamento','observacionesMedicamento','derivacionesMedicamento'
-                  )
 
 class ObservacionSemanalSerializer(serializers.ModelSerializer):
     class Meta:
@@ -155,6 +161,71 @@ class StockMedicamentosResidenteSerializer(serializers.ModelSerializer):
         model = StockMedicamentosResidente
         fields = (
                 'id','residenteM','genericMedicamento','nombreMedicamento','marcaMedicamento',
-                'pesoMedicamento','cantDisponible','medicionMedicamento',
-                'fechaIngreso','fechaCaducidad','codMedicamento','observacionesMedicamento','derivacionesMedicamento'
+                'pesoMedicamento','medicionMedicamento',
+                'codMedicamento','observacionesMedicamento','derivacionesMedicamento',
+                'fechaInicio','cantidadTotal','cantidadDiaria','cantidadDisponible'
                   )
+        
+
+class MedicationStatusSerializer(serializers.Serializer):
+    lowMedication = serializers.BooleanField()
+    lessThanAWeek = serializers.BooleanField()
+    medicamento = serializers.CharField()
+    residente = serializers.CharField()
+    fechaAgotamiento = serializers.DateField()
+    today = serializers.DateField()
+
+    class Meta:
+        fields = (
+            'lowMedication', 'lessThanAWeek','medicamento','residente','fechaAgotamiento','today'
+                  
+                  )  # Lista de campos a incluir en la respuesta
+    
+        
+
+class CuracionesResidentesSerializer(serializers.ModelSerializer):  
+    class Meta:
+        model=CuracionesResidente
+        fields = (
+            'residenteC','fechaRealizada','profesional','medicacionAplicada'
+        )
+
+
+
+
+class LocalArmoniaSerializer(serializers.ModelSerializer):
+    foto = Base64ImageField(required=False)
+    class Meta:
+        model = LocalArmonia
+        fields = (
+            'nombre','foto','localidad','domicilio',
+            'cuil','fechaCreacion','numeroTelefonico','id'
+        )
+
+
+
+
+class StockMedicamentosLocalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StockMedicamentosLocal
+        fields = (
+                'id','localA','genericMedicamento','nombreMedicamento','marcaMedicamento',
+                'pesoMedicamento','medicionMedicamento',
+                'codMedicamento','observacionesMedicamento','derivacionesMedicamento',
+                'fechaInicio','cantidadTotal','cantidadDiaria','cantidadDisponible'
+                  )
+        
+class MedicationArmoniaStatusSerializer(serializers.Serializer):
+    lowMedication = serializers.BooleanField()
+    lessThanAWeek = serializers.BooleanField()
+    medicamento = serializers.CharField()
+    local = serializers.CharField()
+    fechaAgotamiento = serializers.DateField()
+    today = serializers.DateField()
+
+    class Meta:
+        fields = (
+            'lowMedication', 'lessThanAWeek','medicamento','local','fechaAgotamiento','today'
+                  
+                  )  # Lista de campos a incluir en la respuesta
+ 
