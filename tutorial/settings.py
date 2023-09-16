@@ -48,9 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders', 
     'quickstart',
     'rest_framework',
-    'corsheaders', 
 ]
 
 MIDDLEWARE = [
@@ -72,6 +72,12 @@ CORS_ALLOWED_ORIGINS = [
     'http://alpiccdg2022.000webhostapp.com'
     
 ]
+
+CORS_ORIGIN_WHITELIST =(
+    'http://localhost:4200',
+    'http://www.whitenoiseland.com.ar',
+    'http://alpiccdg2022.000webhostapp.com'
+)
 
 
 ROOT_URLCONF = 'tutorial.urls'
