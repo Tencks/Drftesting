@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework import routers
 from . import api
-from .api import  ResidenteViewSet, StockMedicamentosResidenteViewSet, ObservacionSemanalViewSet,StockMedicamentosLocalViewSet,Record, Login, Logout, LocalArmonioViewSet, UserDataViewSet, CuracionesResidenteViewSet,MedicationStatusView,MedicationArmoniaStatusView
+from .api import  CambiarEstadoEgresado, ResidenteViewSet, StockMedicamentosResidenteViewSet, ObservacionSemanalViewSet,StockMedicamentosLocalViewSet,Record, Login, Logout, LocalArmonioViewSet, UserDataViewSet, CuracionesResidenteViewSet,MedicationStatusView,MedicationArmoniaStatusView
 
 # Configuración de las URLs para las vistas Record, Login y Logout
 urlpatterns = [
@@ -16,13 +16,13 @@ urlpatterns = [
     path('api/residentes/<int:residente_id>/signosVitales/', api.Observacion_residente, name='Observacion_residente'),
     path('api/residentes/<int:residente_id>/curaciones/', api.Curacion_residente, name='Curacion_residente'),
     path('api/residentes/<int:residente_id>/medicamentos/status', api.MedicationStatusView.as_view(), name='medication-status'),
+    path('api/residentes/<int:residente_id>/egresarResidente/', CambiarEstadoEgresado.as_view(), name='cambiar_estado_egresado'),
 
 
     path('api/local/<int:local_id>/localMedicamentos/', api.medicamentos_local, name='medicamentos_local'),
 
     path('api/local/<int:local_id>/localMedicamentos/status', api.MedicationArmoniaStatusView.as_view(), name='medication-status-Armonia'),
 
-    
 ]
 
 

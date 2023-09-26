@@ -143,7 +143,7 @@ class ResidenteSerializer(serializers.ModelSerializer):
             'id','nombreResidente','apellidoResidente','dniResidente','fechaNacimiento','edad',
             'genero','medicoDeCabecera','grupoSanguineo','numeroDeHabitacion','observacionesResidente',
             'localidadFamiliar','domicilioFamiliar','nombreFamiliar','apellidoFamiliar','numeroTelefonico',
-            'dniFamiliar','numeroAfiliado','obraSocial','vinculoConElResidente','fotoResidente'
+            'dniFamiliar','numeroAfiliado','obraSocial','vinculoConElResidente','fotoResidente','egresado'
             )
 
 
@@ -152,7 +152,7 @@ class ObservacionSemanalSerializer(serializers.ModelSerializer):
         model = ObservaciónSemanal
         fields = (
             'residenteS','tensionArterial','glucemia','saturacion','pulso',
-            'observacionesSemanales','derivacionesSemanales','fechaConsulta'
+            'observacionesSemanales','fechaConsulta'
         )
         
         
@@ -162,7 +162,7 @@ class StockMedicamentosResidenteSerializer(serializers.ModelSerializer):
         fields = (
                 'id','residenteM','genericMedicamento','nombreMedicamento','marcaMedicamento',
                 'pesoMedicamento','medicionMedicamento',
-                'codMedicamento','observacionesMedicamento','derivacionesMedicamento',
+                'codMedicamento','observacionesMedicamento',
                 'fechaInicio','cantidadTotal','cantidadDiaria','cantidadDisponible'
                   )
         
@@ -187,7 +187,7 @@ class CuracionesResidentesSerializer(serializers.ModelSerializer):
     class Meta:
         model=CuracionesResidente
         fields = (
-            'residenteC','fechaRealizada','profesional','medicacionAplicada'
+            'residenteC','fechaRealizada','profesional','practicaAplicada'
         )
 
 
@@ -199,7 +199,7 @@ class LocalArmoniaSerializer(serializers.ModelSerializer):
         model = LocalArmonia
         fields = (
             'nombre','foto','localidad','domicilio',
-            'cuil','fechaCreacion','numeroTelefonico','id'
+            'habilitacionProvincial','habilitacionMunicipal','numeroTelefonico','id'
         )
 
 
@@ -211,7 +211,7 @@ class StockMedicamentosLocalSerializer(serializers.ModelSerializer):
         fields = (
                 'id','localA','genericMedicamento','nombreMedicamento','marcaMedicamento',
                 'pesoMedicamento','medicionMedicamento',
-                'codMedicamento','observacionesMedicamento','derivacionesMedicamento',
+                'codMedicamento','observacionesMedicamento',
                 'fechaInicio','cantidadTotal','cantidadDiaria','cantidadDisponible'
                   )
         

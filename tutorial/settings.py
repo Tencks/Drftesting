@@ -69,6 +69,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
     'http://www.whitenoiseland.com.ar',
+    'https://www.whitenoiseland.com.ar',
     'http://alpiccdg2022.000webhostapp.com'
     
 ]

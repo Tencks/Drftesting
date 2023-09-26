@@ -94,7 +94,6 @@ def medicamentos_residente(request, residente_id):
         'cantidadDisponible': med.cantidadDisponible,
         'Codigo': med.codMedicamento,
         'Observaciones': med.observacionesMedicamento,
-        'Derivaciones': med.derivacionesMedicamento,
         'id': med.id,
 
             
@@ -147,7 +146,7 @@ class MedicationStatusView(APIView):
                     'medicamento': medicamento,
                     'lowMedication': low_medication,
                     'lessThanAWeek': less_than_a_week,
-                    'fechaAgotamiento': fecha_agotamiento.strftime('%Y-%m-%d'),
+                    'fechaAgotamiento': fecha_agotamiento.strftime('%d/%m'),
                     'today': today.strftime('%Y-%m-%d'),
                     # Otros campos si es necesario
                 }
@@ -159,7 +158,18 @@ class MedicationStatusView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
+class CambiarEstadoEgresado(APIView):
+    def post(self, request, residente_id):
+        try:
+            residente = Residente.objects.get(pk=residente_id)
+            residente.egresado = not residente.egresado  # Cambia el valor de egresado (True a False o viceversa)
+            residente.save()
+            
+            # Serializa el objeto Residente actualizado y lo envía en la respuesta
+            serializer = ResidenteSerializer(residente)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Residente.DoesNotExist:
+            return Response({"error": "Residente no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
 
 
@@ -179,7 +189,6 @@ def Observacion_residente(request, residente_id):
         'Saturacion': med.saturacion,
         'Pulso': med.pulso,
         'Observaciones': med.observacionesSemanales,
-        'Derivaciones': med.derivacionesSemanales,
 
             
             } for med in observaciones]
@@ -196,7 +205,7 @@ def Curacion_residente(request, residente_id):
     data = [{
         'fechaRealizada':med.fechaRealizada,
         'profesional': med.profesional,
-        'MedicacionAplicada': med.medicacionAplicada,
+        'practicaAplicada': med.practicaAplicada,
         
 
             
@@ -236,7 +245,6 @@ def medicamentos_local(request, local_id):
         'CantidadDiaria': med.cantidadDiaria,
         'Codigo': med.codMedicamento,
         'Observaciones': med.observacionesMedicamento,
-        'Derivaciones': med.derivacionesMedicamento,
         'id': med.id,
 
             
@@ -283,7 +291,7 @@ class MedicationArmoniaStatusView(APIView):
                 'medicamento': medicamento,
                 'lowMedication': low_medication,
                 'lessThanAWeek': less_than_a_week,
-                'fechaAgotamiento': fecha_agotamiento.strftime('%Y-%m-%d'),
+                'fechaAgotamiento': fecha_agotamiento.strftime('%d/%m'),
                 'today': today.strftime('%Y-%m-%d'),
                 # Otros campos si es necesario
             }
